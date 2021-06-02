@@ -1,13 +1,13 @@
 pragma solidity ^0.5.6;
 
-contract Election {
-    string public candidateName;
+contract Weather {
+    string public condition;
 
     constructor() public {
-        candidateName = "Candidate 1";
+        condition = "";
     }
 
-    function setCandidate(string memory _name) public {
-        candidateName = _name;
+    function setCondition(string memory _condition) public {
+        condition = _condition;
     }
 }
