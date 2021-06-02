@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Blockchain weather app</title>
+
+    <!-- Bootstrap -->
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+      body {
+        background-image: url('./css/bg1.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      .text-white{
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" style="width: 650px;">
+      <div class="row">
+        <div class="col-lg-12 text-center" >
+          <h1 class="text-white">Block chain Weather App</h1>
+          <hr/>
+          <br/>
+          <div id="content">
+            <h4 id="condition" class="text-white"></h4>
+            <hr/>
+            <form role="form">
+              <div class="form-group" style="display:inline;">
+                <div class="input-group">
+                  <input class="form-control input-lg" name="candidateName">
+                  </input>
+                  <span class="input-group-btn">
+                    <button id="sub" type="submit" class="btn btn-primary btn-lg">Get Weather</button>
+                  </span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/web3.min.js"></script>
+    <script>
+    
+    var xhttp = new XMLHttpRequest();
+      // Initialize Web3
+        web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'));
+
+      // Set Account
+      web3.eth.defaultAccount = web3.eth.accounts[0];
+
+      // Set Contract Abi
+      var contractAbi =[
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "candidateName",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "setCandidate",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]; // Add Your Contract ABI here!!!
+
+      // Set Contract Address
+      var contractAddress = '0xa5Bc56A4afe0b5dAa09848172CaF4F28c4D9439E'; // Add Your Contract address here!!!
+
+      // Set the Contract
+      var contract = web3.eth.contract(contractAbi).at(contractAddress);
+
+      // Display Candidate Name
+      contract.condition(function(err, condition) {
+        $('#condition').html(condition);
+      });
+      
+      
+     
+      
+      // Change the Candidate Name
+      $('#sub').click(function(event) {
+        event.preventDefault();
+        var place =  $('input').val() 
+        $.post("http://api.weatherapi.com/v1/current.json",
+          {
+            key: "5fb5f16cb6b14515b1992209210206",
+            q: place
+          },
+          function(data, status){
+            contract.setCondition(place +" : "+ data.current.condition.text);
+            location.reload();
+          });
+        
+        
+        
+ 
+      })
+      
+      
+      
+      
+    
+
+    </script>
+  </body>
+</html>
